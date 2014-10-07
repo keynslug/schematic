@@ -4,7 +4,6 @@ import Prelude hiding ((**), div)
 
 import Clay
 import Data.Text.Lazy (Text)
-import Control.Monad
 
 styles :: Text
 styles = render $ do

@@ -1,0 +1,5 @@
+#
+# Settings
+
+# Where to locate repo with json artifacts
+repositoryPath: "repo"

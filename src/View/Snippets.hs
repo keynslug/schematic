@@ -3,13 +3,16 @@ module View.Snippets (
     injectScript,
     injectStylesheet,
     embedStylesheet,
-    blaze
+    blaze,
+    maybeNotFound
     ) where
 
-import Web.Scotty                    (ActionM, html)
+import Web.Scotty                    (ActionM, html, status)
 
 import Data.Monoid                   (mempty)
 import Data.Text.Lazy                (Text, toStrict)
+
+import Network.HTTP.Types            (status404)
 
 import Text.Blaze.Internal           (preEscapedText)
 import Text.Blaze.Html.Renderer.Text (renderHtml)
@@ -38,3 +41,7 @@ embedStylesheet text = style ! type_ "text/css" $ preEscapedText $ toStrict text
 
 blaze :: Html -> ActionM ()
 blaze = html . renderHtml
+
+maybeNotFound :: (a -> ActionM ()) -> Maybe a -> ActionM ()
+maybeNotFound f (Just a) = f a
+maybeNotFound _ Nothing  = status status404
