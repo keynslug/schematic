@@ -1,0 +1,9 @@
+{
+	"folders":
+	[
+		{
+			"path": "/home/keynslug/workspace/schematic",
+            "folder_exclude_patterns": [".cabal*", ".hdevtools*"]
+		}
+	]
+}
