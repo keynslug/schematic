@@ -1,0 +1,7 @@
+dist
+repo
+.cabal*
+cabal*.config
+*.sublime-workspace
+tags
+TAGS
