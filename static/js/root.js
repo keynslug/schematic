@@ -12,8 +12,8 @@ $(document).ready(function () {
     JSONEditor.defaults.options.required_by_default   = true;
     JSONEditor.defaults.options.show_errors           = 'change';
 
-    var el = $('#editor').get(0);
-    var editor = new JSONEditor(el, {schema: {'$ref': '/json/schema.json'}});
+    var el = $('#editor');
+    var editor = new JSONEditor(el.get(0), {schema: {'$ref': '/schema/' + el.data('name')}});
     var navbar = $('nav.navbar');
 
     editor.on('change', function() {

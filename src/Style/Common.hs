@@ -3,10 +3,15 @@ module Style.Common (styles) where
 import Prelude hiding ((**), div)
 
 import Clay
+import Data.Monoid ((<>))
 import Data.Text.Lazy (Text)
 
 styles :: Text
 styles = render $ do
+    ul # ".nav" # ".navbar-nav" |> (a <> li |> a) ? do
+        color white
+        hover & do background $ rgba 0 0 0 20
+        focus & do background $ rgba 0 0 0 20
     nav # ".navbar" ? do
         color white
         border solid 0 white
@@ -19,10 +24,6 @@ styles = render $ do
                 visibility visible
         ".navbar-brand" ? do
             fontSize $ em 1.6
-        a ? do
-            color white
-            hover & do
-                background $ rgba 0 0 0 20
 
     div # "#editor" ? do
         h3 ? do
