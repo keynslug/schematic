@@ -3,6 +3,7 @@ module Style.Common (styles) where
 import Prelude hiding ((**), div)
 
 import Clay
+import Control.Monad (forM_)
 import Data.Monoid ((<>))
 import Data.Text.Lazy (Text)
 
@@ -16,34 +17,47 @@ styles = render $ do
         color white
         border solid 0 white
         background validGreen
-        "#errors" ? do
-            visibility hidden
+        ".pending" & do
+            backgroundImage (url "/img/pr.png")
+            backgroundRepeat repeatX
         ".invalid" & do
             background alertRed
-            "#errors" ? do
-                visibility visible
+            a # "#commit" ? do
+                visibility hidden
         ".navbar-brand" ? do
             fontSize $ em 1.6
-
+    nav |> ".statusbar" ? do
+        backgroundColor (validGreen +. 32)
+        [paddingTop, paddingBottom] `forM_` ($ (px 4))
+        ".container" <? do
+            fontSize (em 0.8)
+            fontStyle italic
+            "#status" <? float floatLeft
+            "#rev"    <? float floatRight
+    nav # ".invalid" |> ".statusbar" ?
+        backgroundColor (alertRed +. 32)
     div # "#editor" ? do
-        h3 ? do
-            fontSize $ px 20
-            marginTop $ px 10
-        button # ".btn" ? do
-            fontSize (px 12)
-            lineHeight (em 1.5)
-            sym2 padding (px 1) (px 5)
-            sym borderRadius nil
-        div # ".row" ? do
-            paddingLeft $ px 9
-        div # ".well" ? do
-            sym borderRadius nil
-        ".form-control" ? do
-            height (px 24)
-            sym2 padding (px 2) (px 6)
-            sym borderRadius nil
+        editor
 
-        colorizeLevels $ [lightpink, lightgreen, lightblue, violet, salmon]
+editor :: Css
+editor = do
+    h3 ? do
+        fontSize $ px 20
+        marginTop $ px 10
+    button # ".btn" ? do
+        fontSize (px 12)
+        lineHeight (em 1.5)
+        sym2 padding (px 1) (px 5)
+        sym borderRadius nil
+    div # ".row" ? do
+        paddingLeft $ px 9
+    div # ".well" ? do
+        sym borderRadius nil
+    ".form-control" ? do
+        height (px 24)
+        sym2 padding (px 2) (px 6)
+        sym borderRadius nil
+    colorizeLevels $ [lightpink, lightgreen, lightblue, violet, salmon]
 
 colorizeLevels :: [Color] -> Css
 colorizeLevels [] = return ()

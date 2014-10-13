@@ -8,14 +8,14 @@ import Style.Common                  (styles)
 import Web.Scotty                    (ActionM)
 
 import Control.Monad                 (forM_)
-import Data.Monoid                   (mempty)
+import Data.Monoid                   (mempty, (<>))
 import Data.Text                     (Text)
 
-import Text.Blaze.Html5              ( Html
-                                     , a, body, div, nav, docTypeHtml, head, li, title, ul, (!)
+import Text.Blaze.Html5              ( Html, docTypeHtml
+                                     , a, body, div, nav, form, head, li, title, ul, (!)
                                      , dataAttribute, customAttribute, span, toHtml, toValue
                                      )
-import Text.Blaze.Html5.Attributes   (class_, href, id)
+import Text.Blaze.Html5.Attributes   (class_, action, method, href, id)
 
 type MenuEntry = (Text, Text)
 data MenuList = MenuList Text [MenuEntry]
@@ -35,12 +35,17 @@ renderLayout t b = docTypeHtml $ do
         injectScript "/js/root.js"
 
 renderNavBar :: Html -> Html -> Html
-renderNavBar menuBlock rightBlock = nav ! class_ "navbar navbar-static-top valid" $ div ! class_ "container" $ do
-    ul ! class_ "nav navbar-nav" $ do
-        a ! href "/" $ li ! class_ "navbar-brand" $ "Schematic"
-        menuBlock
-    ul ! class_ "nav navbar-nav navbar-right" $
-        rightBlock
+renderNavBar menuBlock rightBlock =
+    nav ! class_ "navbar navbar-static-top valid" $ do
+        div ! class_ "container" $ do
+            ul ! class_ "nav navbar-nav" $ do
+                a ! href "/" $ li ! class_ "navbar-brand" $ "Schematic"
+                menuBlock
+            ul ! class_ "nav navbar-nav navbar-right" $
+                rightBlock
+        div ! class_ "statusbar" $ div ! class_ "container" $ do
+            span ! id "status" $ mempty
+            span ! id "rev" $ "Revision"
 
 renderMenuList :: MenuList -> Html
 renderMenuList (MenuList sel es) =
@@ -51,12 +56,16 @@ renderMenuList (MenuList sel es) =
         ul ! class_ "dropdown-menu" ! customAttribute "role" "menu" $
             forM_ es $ \(content, ref) -> li $ a ! href (toValue ref) $ toHtml content
 
-renderRightButtons :: Html
-renderRightButtons =
-    li $ a ! id "errors" ! href "#" $ "Errors"
+renderRightButtons :: Text -> Html
+renderRightButtons name = do
+    li $  a ! id "commit" ! href (toValue $ "/data/" <> name) $ do
+        "save"
+    li $ a ! id "refresh" ! href "#" $ do
+        "refresh"
+        form ! action "/schemata/update" ! method "POST" $ mempty
 
 view :: Text -> MenuList -> ActionM ()
 view name menu = blaze $ renderLayout "Schematic" $ do
-    renderNavBar (renderMenuList menu) renderRightButtons
+    renderNavBar (renderMenuList menu) (renderRightButtons name)
     div ! class_ "container" $ do
         div ! id "editor" ! dataAttribute "name" (toValue name) $ mempty
