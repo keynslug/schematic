@@ -36,5 +36,6 @@ executable schematic
                        , filestore
                        , yaml
                        , aeson
+                       , aeson-pretty
                        , filepath
                        , utf8-string

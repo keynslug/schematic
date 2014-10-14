@@ -15,6 +15,7 @@ import Control.Exception
 import Data.Monoid
 import Data.Maybe (fromMaybe)
 import Data.Aeson
+import Data.Aeson.Encode.Pretty
 import Data.ByteString.Lazy (ByteString)
 import Data.FileStore.GitSync
 
@@ -56,7 +57,7 @@ putDataObject fs name o = do
     let author = Author "Schematic" "schematic@keynfawk.es"
     let description = "Changes to '" <> name <> "' data object"
     let fp = (filePath DataObject name)
-    save fs fp author description (encode o)
+    save fs fp author description (encodePretty o)
     latest fs fp
 
 update :: SyncFileStore -> IO RevisionId
