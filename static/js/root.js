@@ -55,7 +55,7 @@ $(document).ready(function () {
     // Knick-knacks
 
     var animateProgress = function () {
-        navbar.animate({'background-position-x': "+=160"}, 3000, 'linear', function () { animateProgress(); });
+        $('.statusbar', navbar).animate({'background-position-x': "+=160"}, 3000, 'linear', function () { animateProgress(); });
     };
 
     var startProgressAnimation = function () {

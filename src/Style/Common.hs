@@ -17,9 +17,6 @@ styles = render $ do
         color white
         border solid 0 white
         background validGreen
-        ".pending" & do
-            backgroundImage (url "/img/pr.png")
-            backgroundRepeat repeatX
         ".invalid" & do
             background alertRed
             a # "#commit" ? do
@@ -36,6 +33,8 @@ styles = render $ do
             "#rev"    <? float floatRight
     nav # ".invalid" |> ".statusbar" ?
         backgroundColor (alertRed +. 32)
+    nav # ".pending" |> ".statusbar" ?
+        backgroundImage (url "/img/pr.png")
     div # "#editor" ? do
         editor
 
