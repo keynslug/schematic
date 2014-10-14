@@ -59,6 +59,9 @@ main = do
         get "/data/revision" $ do
             json =<< (liftIO $ actualRevision repo)
 
+        get "/data" $ do
+            json =<< (liftIO $ bakeData repo)
+
         get "/data/:name" $ do
             name <- param "name"
             contents <- liftIO $ getDataObject repo name

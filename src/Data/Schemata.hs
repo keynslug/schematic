@@ -2,6 +2,7 @@ module Data.Schemata (
       Name
     , list
     , actualRevision
+    , bakeData
     , rawSchema
     , getSchema
     , rawDataObject
@@ -10,10 +11,12 @@ module Data.Schemata (
     , update
     ) where
 
+import Control.Applicative (pure, liftA2)
 import Control.Exception
 
 import Data.Monoid
-import Data.Maybe (fromMaybe)
+import Data.Maybe (fromMaybe, catMaybes)
+import Data.Text (pack)
 import Data.Aeson
 import Data.Aeson.Encode.Pretty
 import Data.ByteString.Lazy (ByteString)
@@ -32,6 +35,14 @@ list fs = ifFound $ do
 
 actualRevision :: SyncFileStore -> IO RevisionId
 actualRevision = flip latest ""
+
+bakeData :: SyncFileStore -> IO Object
+bakeData repo = do
+    index <- list repo
+    objects <- mapM (getDataObject repo) index
+    let pairs = catMaybes $ zipWith (liftA2 (.=) . pure) (map pack index) objects
+    let Object result = object pairs
+    return result
 
 raw_ :: Type -> SyncFileStore -> Name -> IO (Maybe ByteString)
 raw_ tp fs name = ifFound $
