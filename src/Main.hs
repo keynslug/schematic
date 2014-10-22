@@ -17,6 +17,7 @@ import Settings
 import View.Snippets
 import View.Root (MenuList(..))
 import qualified View.Root
+import qualified View.IFrame
 
 main :: IO ()
 main = do
@@ -32,6 +33,10 @@ main = do
         get "/" $ do
             index <- liftIO $ list repo
             redirect $ LT.pack $ routeData (head index)
+
+        get "/iframe" $ do
+            index <- liftIO $ list repo
+            View.IFrame.view (iframeTarget s) $ makeMenu "select" index
 
         get "/edit/:name" $ do
             sname <- param "name"
